@@ -10,26 +10,51 @@ bot = get_bot()
 
 async def rre(qun,msg):
     mark = 0
+    mark2 = 0
     msg = str(msg)
-    p="/home/pi/qqbot/awesome/plugins/repeater/repeater_data/"+str(qun)+".txt"
-    if msg.find(".jpg")!=-1 or msg.find(".JPG")!=-1:
-        return 0
+    p="/home/lighthouse/qqbot-finial/awesome/plugins/repeater/repeater_data/"+str(qun)+".txt"
+    pre="/home/lighthouse/qqbot-finial/awesome/plugins/repeater/repeater_data/pre" + str(
+        qun) + ".txt"
+
+    if msg.find(".jpg") != -1 or msg.find(".JPG") != -1:
+        mark = 0
+        mark2 = 0
     else:
         if os.path.exists(p):
-            async with aiofiles.open(p,"r",encoding = 'utf-8') as f:
+            async with aiofiles.open(p, "r", encoding='utf-8') as f:
                 msg_old = await f.read()
                 msg_old = msg_old.strip()
             if msg_old == msg:
-                mark=1
-                async with aiofiles.open(p, "w",encoding = 'utf-8') as f:
+                mark = 1
+                mark2 = 1
+                async with aiofiles.open(p, "w", encoding='utf-8') as f:
                     await f.write("")
-        if mark==0:
-            async with aiofiles.open(p,"w",encoding = 'utf-8') as f:
-                    await f.write(msg)
-        return mark
+                if os.path.exists(pre):
+                    async with aiofiles.open(pre, "r", encoding='utf-8') as f:
+                        rep_old = await f.read()
+                        rep_old = rep_old.strip()
+                    if mark == 1:
+                        if rep_old == msg:
+                            mark = 0
+                        else:
+                            async with aiofiles.open(pre, "w", encoding='utf-8') as f:
+                                await f.write(msg)
+                    else:
+                        async with aiofiles.open(pre, "w", encoding='utf-8') as f:
+                            await f.write("")
+                else:
+                    async with aiofiles.open(pre, "w", encoding='utf-8') as f:
+                        await f.write(msg)
+
+        if mark2 == 0:
+            async with aiofiles.open(p, "w", encoding='utf-8') as f:
+                await f.write(msg)
+
+    return mark
+
 
 async def t_w():
-    p = "/home/pi/qqbot/awesome/plugins/repeater/repeater_data/time.txt"
+    p = "/home/lighthouse/qqbot-finial/awesome/plugins/repeater/repeater_data/time.txt"
     s = time.time()
     sub = 0
     if os.path.exists(p):
@@ -49,7 +74,7 @@ async def t_w():
         return 0
 
 async def gjc_on(qun):
-    p = "/home/pi/qqbot/awesome/plugins/repeater/repeater_data/gjc_no.txt"
+    p = "/home/lighthouse/qqbot-finial/awesome/plugins/repeater/repeater_data/gjc_no.txt"
     mark = 1
     if os.path.exists(p):
         async with aiofiles.open(p,"r",encoding = 'utf-8') as f:
@@ -74,8 +99,8 @@ async def re(context):
 
     #关键词部分
     if await gjc_on(qun):
-        if os.path.exists("/home/pi/qqbot/awesome/plugins/repeater/repeater_data/gjc.txt"):
-            async with aiofiles.open("/home/pi/qqbot/awesome/plugins/repeater/repeater_data/gjc.txt","r",encoding = 'utf-8') as f:
+        if os.path.exists("/home/lighthouse/qqbot-finial/awesome/plugins/repeater/repeater_data/gjc.txt"):
+            async with aiofiles.open("/home/lighthouse/qqbot-finial/awesome/plugins/repeater/repeater_data/gjc.txt","r",encoding = 'utf-8') as f:
                 lines = await f.readlines()
                 for line in lines:
                     line = line.strip().split(" ")
