@@ -24,7 +24,6 @@
 pip install -r env.txt
 ```
 
-<++>
 请在[腾讯云](https://cloud.tencent.com/login) 和[聚合数据](https://passport.juhe.cn/cas/login)平台获取 API 密钥，填入[config.py](config.py)， 如下：
 
 ```python
